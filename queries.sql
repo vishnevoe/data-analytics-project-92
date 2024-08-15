@@ -50,7 +50,16 @@ left join employees e
 left join products p 
 	on s.product_id = p.product_id
 group by seller, TO_CHAR(s.sale_date, 'Day'), extract(isodow from s.sale_date)
-order by extract(isodow from s.sale_date), seller;
+order by 
+case
+        when extract(isodow from s.sale_date) = 1 then 1 
+        when extract(isodow from s.sale_date) = 2 then 2 
+        when extract(isodow from s.sale_date) = 3 then 3 
+        when extract(isodow from s.sale_date) = 4 then 4 
+        when extract(isodow from s.sale_date) = 5 then 5 
+        when extract(isodow from s.sale_date) = 6 then 6 
+        when extract(isodow from s.sale_date) = 7 then 7 
+    end, seller;
 
 # Запрос, с помощью которого формируется отчет с информацией о количестве пользователей в трех возрастных группах: 16-25, 26-40, старше 40. Данные отсортированы по возрастным группам.
 
