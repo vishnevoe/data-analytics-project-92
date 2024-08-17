@@ -60,7 +60,7 @@ left join employees as e
     on s.sales_person_id = e.employee_id
 left join products as p
     on s.product_id = p.product_id
-group by seller, to_char(s.sale_date, 'day'), EXTRACT(isodow from s.sale_date)
+group by seller, TO_CHAR(s.sale_date, 'day'), EXTRACT(isodow from s.sale_date)
 order by EXTRACT(isodow from s.sale_date), seller;
 
 /* Запрос, с помощью которого формируется отчет
