@@ -3,7 +3,10 @@
 select COUNT(customer_id)
 from customers;
 
-/* Запрос, с помощью которого формируется отчет о десяти лучших продавцах. Отчет состоит из трех колонок: данные о продавце, данные о суммарной выручке с проданных товаров и данные о количестве проведенных сделок. Данные отсортированы по убыванию выручки. */
+/* Запрос, с помощью которого формируется отчет о десяти лучших продавцах. 
+Отчет состоит из трех колонок: данные о продавце, данные о суммарной выручке 
+проданных товаров и данные о количестве проведенных сделок. 
+Данные отсортированы по убыванию выручки. */
 
 select
     CONCAT(e.first_name, ' ', e.last_name) as seller,
@@ -18,7 +21,10 @@ group by seller
 order by income desc
 limit 10;
 
-/* Запрос, с помощью которого формируется отчет с информацией о продавцах, чья средняя выручка за сделку меньше средней выручки за сделку по всем продавцам. Данные отсортированы по возрастанию выручки. */
+/* Запрос, с помощью которого формируется отчет с информацией о продавцах, 
+чья средняя выручка за сделку меньше средней выручки за сделку по всем 
+продавцам. 
+Данные отсортированы по возрастанию выручки. */
 
 with average_seller as (
     select
@@ -39,21 +45,28 @@ from average_seller
 where average_income < (select AVG(average_income) from average_seller)
 order by average_income asc;
 
-/* Запрос, с помощью которого формируется отчет, содержащий информацию о выручке по дням недели. Каждая запись содержит имя и фамилию продавца, день недели и суммарную выручку. Данные отсортированы по порядковому номеру дня недели и продавцу. */
+/* Запрос, с помощью которого формируется отчет, 
+содержащий информацию о выручке по дням недели. 
+Каждая запись содержит имя и фамилию продавца, 
+день недели и суммарную выручку. 
+Данные отсортированы по порядковому номеру дня недели и продавцу. */
 
 select
-    concat(e.first_name, ' ', e.last_name) as seller,
-    to_char(s.sale_date, 'day') as day_of_week,
-    floor(sum(s.quantity * p.price)) as income
+    CONCAT(e.first_name, ' ', e.last_name) as seller,
+    TO_CHAR(s.sale_date, 'day') as day_of_week,
+    FLOOR(SUM(s.quantity * p.price)) as income
 from sales as s
 left join employees as e
     on s.sales_person_id = e.employee_id
 left join products as p
     on s.product_id = p.product_id
-group by seller, to_char(s.sale_date, 'day'), extract(isodow from s.sale_date)
-order by extract(isodow from s.sale_date), seller;
+group by seller, to_char(s.sale_date, 'day'), EXTRACT(isodow from s.sale_date)
+order by EXTRACT(isodow from s.sale_date), seller;
 
-/* Запрос, с помощью которого формируется отчет с информацией о количестве пользователей в трех возрастных группах: 16-25, 26-40, старше 40. Данные отсортированы по возрастным группам. */
+/* Запрос, с помощью которого формируется отчет 
+с информацией о количестве пользователей в трех 
+возрастных группах: 16-25, 26-40, старше 40. 
+Данные отсортированы по возрастным группам. */
 
 select
     case
@@ -66,7 +79,11 @@ from customers
 group by age_category
 order by age_category;
 
-/* Запрос, с помощью которого формируется отчет с информацией о количестве уникальных покупателей и выручке, которую они принесли. Данные сгруппированы по дате и отсортированы по дате по возрастанию. */
+/* Запрос, с помощью которого формируется отчет 
+с информацией о количестве уникальных покупателей 
+и выручке, которую они принесли. 
+Данные сгруппированы по дате и отсортированы 
+по дате по возрастанию. */
 
 select
     TO_CHAR(s.sale_date, 'YYYY-MM') as selling_month,
@@ -78,12 +95,15 @@ left join products as p
 group by TO_CHAR(s.sale_date, 'YYYY-MM')
 order by selling_month;
 
-/* Запрос, с помощью которого формируется отчет о покупателях, первая покупка которых была в ходе проведения акций (цена товара указана как равная нулю). Данные отсортированы по id покупателя. */
+/* Запрос, с помощью которого формируется отчет 
+о покупателях, первая покупка которых была в ходе проведения акций 
+(цена товара указана как равная нулю). 
+Данные отсортированы по id покупателя. */
 
 select distinct on (s.customer_id)
     s.sale_date,
-    concat(c.first_name, ' ', c.last_name) as customer,
-    concat(e.first_name, ' ', e.last_name) as seller
+    CONCAT(c.first_name, ' ', c.last_name) as customer,
+    CONCAT(e.first_name, ' ', e.last_name) as seller
 from sales as s
 left join employees as e
     on s.sales_person_id = e.employee_id
