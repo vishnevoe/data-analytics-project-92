@@ -42,14 +42,14 @@ order by average_income asc;
 
 select  
     concat(e.first_name, ' ', e.last_name) as seller,
-    to_char(s.sale_date, 'Day') AS day_of_week,
+    to_char(s.sale_date, 'day') AS day_of_week,
     floor(sum(s.quantity * p.price)) as income
 from sales s
 left join employees e 
     on s.sales_person_id = e.employee_id
 left join products p 
     on s.product_id = p.product_id
-group by seller, to_char(s.sale_date, 'Day'), extract(isodow from s.sale_date)
+group by seller, to_char(s.sale_date, 'day'), extract(isodow from s.sale_date)
 order by extract(isodow from s.sale_date), seller;
 
 # Запрос, с помощью которого формируется отчет с информацией о количестве пользователей в трех возрастных группах: 16-25, 26-40, старше 40. Данные отсортированы по возрастным группам.
@@ -70,7 +70,7 @@ order by age_category;
 select
 	TO_CHAR(s.sale_date, 'YYYY-MM') AS selling_month,
 	COUNT(distinct s.customer_id) as total_customers,
-	SUM(floor(s.quantity * p.price)) as income
+	FLOOR(SUM(s.quantity * p.price)) as income
 from sales s
 left join products p 
 	on s.product_id = p.product_id
