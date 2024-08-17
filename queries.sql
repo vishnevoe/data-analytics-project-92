@@ -41,25 +41,16 @@ order by average_income asc;
 # Запрос, с помощью которого формируется отчет, содержащий информацию о выручке по дням недели. Каждая запись содержит имя и фамилию продавца, день недели и суммарную выручку. Данные отсортированы по порядковому номеру дня недели и продавцу.
 
 select  
-	concat(e.first_name, ' ', e.last_name) as seller,
-	TO_CHAR(s.sale_date, 'Day') AS day_of_week,
-	floor(SUM(s.quantity * p.price)) as income
+    concat(e.first_name, ' ', e.last_name) as seller,
+    to_char(s.sale_date, 'Day') AS day_of_week,
+    floor(sum(s.quantity * p.price)) as income
 from sales s
 left join employees e 
-	on s.sales_person_id = e.employee_id
+    on s.sales_person_id = e.employee_id
 left join products p 
-	on s.product_id = p.product_id
-group by seller, TO_CHAR(s.sale_date, 'Day'), extract(isodow from s.sale_date)
-order by 
-case
-        when extract(isodow from s.sale_date) = 1 then 1 
-        when extract(isodow from s.sale_date) = 2 then 2 
-        when extract(isodow from s.sale_date) = 3 then 3 
-        when extract(isodow from s.sale_date) = 4 then 4 
-        when extract(isodow from s.sale_date) = 5 then 5 
-        when extract(isodow from s.sale_date) = 6 then 6 
-        when extract(isodow from s.sale_date) = 7 then 7 
-    end, seller;
+    on s.product_id = p.product_id
+group by seller, to_char(s.sale_date, 'Day'), extract(isodow from s.sale_date)
+order by extract(isodow from s.sale_date), seller;
 
 # Запрос, с помощью которого формируется отчет с информацией о количестве пользователей в трех возрастных группах: 16-25, 26-40, старше 40. Данные отсортированы по возрастным группам.
 
