@@ -26,23 +26,22 @@ limit 10;
 продавцам.
 Данные отсортированы по возрастанию выручки. */
 
-with average_seller as (
-    select
-        CONCAT(e.first_name, ' ', e.last_name) as seller,
-        FLOOR(AVG(s.quantity * p.price)) as average_income
-    from sales as s
-    left join employees as e
-        on s.sales_person_id = e.employee_id
-    left join products as p
-        on s.product_id = p.product_id
-    group by seller
-)
-
 select
-    seller,
-    average_income
-from average_seller
-where average_income < (select AVG(average_income) from average_seller)
+    concat(e.first_name, ' ', e.last_name) as seller,
+    floor(avg(s.quantity * p.price)) as average_income
+from sales as s
+left join employees as e
+    on s.sales_person_id = e.employee_id
+left join products as p
+    on s.product_id = p.product_id
+group by seller
+having
+    avg(s.quantity * p.price)
+    < (
+        select avg(s1.quantity * p1.price)
+        from sales as s1
+        left join products as p1 on s1.product_id = p1.product_id
+    )
 order by average_income asc;
 
 /* Запрос, с помощью которого формируется отчет,
