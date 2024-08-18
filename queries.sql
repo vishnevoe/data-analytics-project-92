@@ -27,8 +27,8 @@ limit 10;
 Данные отсортированы по возрастанию выручки. */
 
 select
-    concat(e.first_name, ' ', e.last_name) as seller,
-    floor(avg(s.quantity * p.price)) as average_income
+    CONCAT(e.first_name, ' ', e.last_name) as seller,
+    FLOOR(AVG(s.quantity * p.price)) as average_income
 from sales as s
 left join employees as e
     on s.sales_person_id = e.employee_id
@@ -36,9 +36,9 @@ left join products as p
     on s.product_id = p.product_id
 group by seller
 having
-    avg(s.quantity * p.price)
+    AVG(s.quantity * p.price)
     < (
-        select avg(s1.quantity * p1.price)
+        select AVG(s1.quantity * p1.price)
         from sales as s1
         left join products as p1 on s1.product_id = p1.product_id
     )
